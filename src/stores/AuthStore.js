@@ -49,11 +49,12 @@ export const useAuthStore = defineStore('auth', {
         }
       }
     },
-    logout() {
+    async logout() {
       this.token = null;
       this.user = null;
       this.isAuthenticated = false;
       localStorage.removeItem('token');
+      await axios.post('127.0.0.1:8000/api/logout');
     },
   },
 });
