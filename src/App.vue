@@ -1,6 +1,6 @@
 <template>
-  <header class="">
-    <Menubar class="!bg-neutral-800" :model="items" >
+  <header class="!w-dvw !m-0 !p-0">
+    <Menubar class="!bg-neutral-800 w-dvw" :model="items" >
       <template  #start>
         <span>
           <img src="@/assets/Western_white_side_Pawn.svg" width="50px" alt="My SVG Icon">
@@ -17,15 +17,16 @@
       </template>
       <template #end>
         <div v-if="isAuthenticated && user">
-          <a class="!text-yellow-500">{{user.name}}</a>
-          <Button class="!bg-yellow-500 !border-yellow-500" @click="logout">Выход</Button>
+          <a class="!text-yellow-500 !m-1">{{user.name}}</a>
+          <Button class="!bg-yellow-500 !border-yellow-500 !m-1" @click="logout">Выход</Button>
         </div>
-        <div v-else>
-          <form class="flex" @submit.prevent="login">
-            <InputText class="" placeholder="Логин" v-model="email" type="email" required/>
-            <InputText placeholder="Пароль" v-model="password" type="password" required/>
-            <Button class="!bg-yellow-500 !border-yellow-500" type="submit">Войти</Button>
+        <div class="flex" v-else>
+          <form class="flex !items-center" @submit.prevent="login">
             <p v-if="authError" class="error"> {{authError}}</p>
+            <router-link to="/user/create" class="!text-gray-400"><p><i class="pi pi-fw pi-pencil"></i>Регистрация</p></router-link>
+            <InputText class="!m-1" placeholder="Логин" v-model="email" type="email" required/>
+            <InputText class="!m-1" placeholder="Пароль" v-model="password" type="password" required/>
+            <Button class="!bg-yellow-500 !border-yellow-500 !m-1" type="submit">Войти</Button>
           </form>
         </div>
       </template>
@@ -56,11 +57,6 @@ export default {
           icon: 'pi pi-fw pi-user',
           route: '/user',
         },
-        {
-          label: 'Регистрация',
-          icon: 'pi pi-fw pi-pencil',
-          route: '/user/create',
-        }
       ]
     };
   },
