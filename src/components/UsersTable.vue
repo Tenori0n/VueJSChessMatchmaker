@@ -8,7 +8,7 @@ export default {
   data() {
     return {
       dataStore: useDataStore(),
-      perpage: 1,
+      perpage: 5,
       offset: 0,
       loading_u: false,
       loading_ut: false,
@@ -70,7 +70,11 @@ export default {
     :laading="true"
     :first="offset"
   >
-    <Column field="id" header="№"/>
+    <Column header="№">
+      <template #body="slotProps">
+        {{ slotProps.index + 1 }}
+      </template>
+    </Column>
     <Column field="name" header="Имя пользователя">
       <template #body="slotProps">
         <a class="!text-white !font-bold" :href="'/user/' + slotProps.data.id">{{slotProps.data.name}}</a>

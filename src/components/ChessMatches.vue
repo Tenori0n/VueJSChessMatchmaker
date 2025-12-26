@@ -82,7 +82,11 @@
     :laading="true"
     :first="offset"
   >
-    <Column field="id" header="№"/>
+    <Column header="№">
+      <template #body="slotProps">
+        {{ slotProps.index + 1 }}
+      </template>
+    </Column>
     <Column field="white_ID" header="Название матча">
       <template #body="slotProps">
         <a class="!text-white !font-bold" :href="'/match/' + slotProps.data.id">{{this.user.find(us => us.id === slotProps.data.white_ID).name}} против {{this.user.find(us => us.id === slotProps.data.black_ID).name}}</a>

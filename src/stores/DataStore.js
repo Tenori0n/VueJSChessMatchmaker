@@ -12,7 +12,11 @@ export const useDataStore = defineStore('data', {
     user_total: null,
     items: [],
     temp_turns: [],
+    profile: [],
+    last_matches: [],
+    temp_matches: [],
     errorMessage: "",
+    errorCode: "",
   }),
   actions: {
     async get_matches(page = 0, perpage = 10){
@@ -186,6 +190,114 @@ export const useDataStore = defineStore('data', {
           console.log(error);
         }
       }
-    }
+    },
+    async create_user(formData)
+    {
+      this.errorMessage = "";
+      try
+      {
+        const response = await axios.post(backendUrl + '/user/create', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          },
+        }
+        );
+        this.errorCode = response.data.code;
+        this.errorMessage = response.data.message;
+      }
+      catch (error) {
+        if (error.response)
+        {
+          this.errorCode = 11;
+          this.errorMessage = error.response.data.message;
+          console.log(error);
+        }
+        else if (error.request)
+        {
+          this.errorCode = 12;
+          this.errorMessage = error.message;
+          console.log(error);
+        }
+        else {
+          this.errorCode = 13;
+          console.log(error);
+        }
+      }
+    },
+    async update_user(id, formData)
+    {
+      this.errorMessage = "";
+      try
+      {
+        const response = await axios.post(backendUrl + '/user/update/' + id, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+          }
+        );
+        this.errorCode = response.data.code;
+        this.errorMessage = response.data.message;
+      }
+      catch (error) {
+        if (error.response)
+        {
+          this.errorCode = 11;
+          this.errorMessage = error.response.data.message;
+          console.log(error);
+        }
+        else if (error.request)
+        {
+          this.errorCode = 12;
+          this.errorMessage = error.message;
+          console.log(error);
+        }
+        else {
+          this.errorCode = 13;
+          console.log(error);
+        }
+      }
+    },
+    async get_user(id)
+    {
+      this.errorMessage = "";
+      try
+      {
+        const response = await axios.get(backendUrl + '/user/' +id);
+        this.profile = response.data;
+      }
+      catch (error) {
+        if (error.response)
+        {
+          this.errorMessage = error.response.data.message;
+          console.log(error);
+        } else if (error.request)
+        {
+          this.errorMessage = error.message;
+          console.log(error);
+        } else {
+          console.log(error);
+        }
+      }
+    },
+    async get_last_5_matches_by_id(id){
+      this.errorMessage = ""
+      try {
+        const response = await axios.get(backendUrl + '/user_matches/' + id);
+        this.last_matches =   response.data;
+      }
+      catch(error){
+        if (error.response)
+        {
+          this.errorMessage = error.response.data.message;
+          console.log(error);
+        } else if (error.request)
+        {
+          this.errorMessage = error.message;
+          console.log(error);
+        } else {
+          console.log(error);
+        }
+      }
+    },
   }
 })

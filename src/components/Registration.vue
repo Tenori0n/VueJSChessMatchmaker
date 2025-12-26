@@ -3,34 +3,91 @@
 </script>
 
 <template>
-  <div>
-    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4 text-light">Регистрация</p>
-    <form class="mx-1 mx-md-4 d-flex justify-content-center" method="post" action="">
-      <div class="w-50">
-        <div data-mdb-input-init class="d-flex mb-4 form-outline flex-fill">
-          <input class="form-control" type="text" name="name" placeholder="Имя пользователя"/>
-        </div>
-        <div data-mdb-input-init class="d-flex mb-4 form-outline flex-fill">
-          <input class="form-control" type="password" name="password" placeholder="Пароль"/>
-        </div>
-        <div data-mdb-input-init class="d-flex mb-4 form-outline flex-fill">
-          <input class="form-control" type="password" name="password_confirmation" placeholder="Подтверждение пароля"/>
-        </div>
-        <div data-mdb-input-init class="d-flex mb-4 form-outline flex-fill">
-          <input class="form-control" type="text" name="email" placeholder="Электронная почта"/>
-        </div>
-        <div class="form-check d-flex justify-content-center mb-3">
-          <input class="form-check-input me-2" type="checkbox" name="rules" value="1"/>
-          <label class="form-check-label">Я согласен с правилами сервиса</label>
-        </div>
-        <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-3">
-          <input  type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-warning btn-lg " value="Регистрация"/>
-        </div>
-      </div>
-    </form>
+  <div class="!flex !justify-center">
+  <form v-on:submit.prevent="createUser" class="!w-1/2 !p-6">
+    <h2 class="!text-center !text-4xl !font-bold !mb-3 !mx-1 !mx-md-4 !mt-4 !text-white" style="color: dimgrey">Регистрация</h2>
+    <div class="!flex !flex-col !mb-4 !mt-4">
+      <InputText type="text" placeholder="Имя пользователя" v-model="this.userName"/>
+    </div>
+    <div class="!flex !flex-col !mb-4 !mt-4">
+      <InputText type="password" placeholder="Пароль" v-model="this.userPassword"/>
+    </div>
+    <div class="flex flex-col !mb-4 !mt-4">
+      <InputText type="password" placeholder="Подтверждение пароля" v-model="this.userConfirmPassword"/>
+    </div>
+    <div class="flex flex-col !mb-4 !mt-4">
+      <InputText type="text" placeholder="Электронная почта" v-model="this.userEmail"/>
+    </div>
+    <div class="!mb-4 !mt-4">
+      <label for="file" id="file-label" class="!block !text-md !font-medium !text-gray-300 !border !border-gray-300 !rounded-md !p-2">
+        <span class="pi pi-upload !mx-3"></span>Выбрать аватар</label>
+      <input type="file" hidden id="file" name="file" v-on:change="changeCaption" required accept="image/*">
+    </div>
+    <div class="flex flex-col !mt-6">
+      <Button class="!bg-yellow-500 !border-yellow-500" type="submit" label="Зарегистрироваться"></Button>
+    </div>
+  </form>
   </div>
+  <Toast position="bottom-right" />
 </template>
+<script>
+import InputText from "primevue/inputtext";
+import Button from "primevue/button";
+import {useDataStore} from "@/stores/DataStore.js";
+import Toast from "primevue/toast";
 
+export default {
+  name: "Registration",
+  components: {InputText, Button, Toast},
+  data() {
+    return {
+      dataStore: useDataStore(),
+      userName: '',
+      userPassword: '',
+      userConfirmPassword: '',
+      userEmail: '',
+      userAvatar: null,
+    }
+  },
+  computed: {
+    errorMessage(){
+      return this.dataStore.errorMessage;
+    },
+    errorCode(){
+      return this.dataStore.errorCode;
+    }
+  },
+  methods: {
+    changeCaption(event) {
+      const file = event.target.files[0];
+      if (file) {
+        document.getElementById("file-label").innerHTML = '<span class="pi pi-file mx-3"></span>' + file.name;
+        this.userAvatar = file;
+      } else {
+        document.getElementById("file-label").innerHTML = '<span class="pi pi-upload mx-3"></span>Выбрать аватар';
+        this.userAvatar = null;
+      }
+    },
+    async createUser(){
+          const formData = new FormData();
+          formData.append("name", this.userName);
+          formData.append("password", this.userPassword);
+          formData.append("password_confirmation", this.userConfirmPassword);
+          formData.append("email", this.userEmail);
+          formData.append('image', this.userAvatar);
+          await this.dataStore.create_user(formData);
+          if (this.errorCode > 0)
+          {
+            this.$toast.add({severity:'error', summary: "Ошибка добавления данных", detail: this.errorMessage, life: 4000});
+          }
+          else
+          {
+            this.$toast.add({severity:'success', summary: "Данные успешно добавлены", detail: this.errorMessage, life: 4000});
+          }
+      }
+    }
+}
+</script>
 <style scoped>
 
 </style>

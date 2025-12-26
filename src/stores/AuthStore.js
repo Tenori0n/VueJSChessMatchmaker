@@ -18,6 +18,9 @@ export const useAuthStore = defineStore('auth', {
         this.user = response.data.user;
         this.isAuthenticated = true;
         localStorage.setItem('token', response.data.token);
+        localStorage.setItem('id', response.data.user.id);
+        console.log(this.user);
+        console.log(localStorage.getItem('id'));
       } catch (error) {
         if (error.response) {
           this.errorMessage = error.response.data.message;
@@ -30,10 +33,10 @@ export const useAuthStore = defineStore('auth', {
         }
       }
     },
-    async getUser() {
+    async getUser(id) {
       this.errorMessage = "";
       try {
-        const response = await axios.get(backendUrl+ '/user',
+        const response = await axios.get(backendUrl+ '/user/' + id,
           { headers: {
             Authorization: 'Bearer ' + this.token
             }});
@@ -55,6 +58,7 @@ export const useAuthStore = defineStore('auth', {
       this.user = null;
       this.isAuthenticated = false;
       localStorage.removeItem('token');
+      localStorage.removeItem('id');
       await axios.post(backendUrl + '/logout');
     },
   },

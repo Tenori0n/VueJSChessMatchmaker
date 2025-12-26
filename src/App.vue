@@ -17,8 +17,8 @@
       </template>
       <template #end>
         <div v-if="isAuthenticated && user">
-          <a class="!text-yellow-500 !m-1">{{user.name}}</a>
-          <Button class="!bg-yellow-500 !border-yellow-500 !m-1" @click="logout">Выход</Button>
+          <router-link :to="'/user/' + user.id" class="!text-yellow-500 !m-1">{{user.name}} </router-link>
+          <Button class="!bg-yellow-500 !border-yellow-500 !m-1" @click="logout(); this.$router.push('/match')">Выход</Button>
         </div>
         <div class="flex" v-else>
           <form class="flex !items-center" @submit.prevent="login">
@@ -26,7 +26,7 @@
             <router-link to="/user/create" class="!text-gray-400"><p><i class="pi pi-fw pi-pencil"></i>Регистрация</p></router-link>
             <InputText class="!m-1" placeholder="Логин" v-model="email" type="email" required/>
             <InputText class="!m-1" placeholder="Пароль" v-model="password" type="password" required/>
-            <Button class="!bg-yellow-500 !border-yellow-500 !m-1" type="submit">Войти</Button>
+            <Button class="!bg-yellow-500 !border-yellow-500 !m-1" type="submit" @click="this.$router.push('/match')">Войти</Button>
           </form>
         </div>
       </template>
@@ -83,7 +83,11 @@ export default {
       const token = localStorage.getItem("token");
       if (token) {
         this.authStore.isAuthenticated = true;
-        this.authStore.getUser();
+        this.authStore.getUser(localStorage.getItem('id'));
+        console.log(this.user);
+      }
+      else {
+        console.log("LOST");
       }
   },
 };
