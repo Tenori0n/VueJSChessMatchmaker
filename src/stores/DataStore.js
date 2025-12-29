@@ -76,6 +76,7 @@ export const useDataStore = defineStore('data', {
         });
 
         this.temp_turn = response.data;
+        console.log(this.temp_turn);
         this.turn = [];
         for (let i = 0; i < this.temp_turn.length; i+=2){
           let white = "";
